@@ -1,1 +1,47 @@
 @import "tailwindcss";
+
+body, #root {
+  background: linear-gradient(to bottom right, #eff6ff, #eef2ff, #faf5ff);
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar Styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #93c5fd #e0e7ff;
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: linear-gradient(to bottom, #eff6ff, #eef2ff, #faf5ff);
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #93c5fd, #a5b4fc);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #60a5fa, #818cf8);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(to bottom, #3b82f6, #6366f1);
+}
+
+/* Ensure body and root have proper setup */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+}
