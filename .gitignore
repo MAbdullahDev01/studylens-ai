@@ -1,0 +1,70 @@
+# =========================
+# General
+# =========================
+.DS_Store
+.env
+.env.*
+*.log
+
+# =========================
+# Node / Frontend / Mobile
+# =========================
+node_modules/
+dist/
+build/
+.vite/
+.expo/
+.expo-shared/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Python / Backend / ML
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+pip-wheel-metadata/
+.pytest_cache/
+.mypy_cache/
+
+# =========================
+# ML Artifacts (IMPORTANT)
+# =========================
+*.pt
+*.pth
+*.onnx
+*.h5
+*.ckpt
+models/
+checkpoints/
+wandb/
+mlruns/
+
+# =========================
+# Jupyter / Colab
+# =========================
+.ipynb_checkpoints/
+*.ipynb
+
+# =========================
+# Supabase
+# =========================
+.supabase/
+
+# =========================
+# IDEs
+# =========================
+.vscode/
+.idea/
+*.swp
+
+# =========================
+# OS
+# =========================
+Thumbs.db
