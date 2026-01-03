@@ -17,3 +17,15 @@ export async function submitStudySession(data) {
 
     return await res.json();
 }
+
+export async function fetchStudySessions() {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/sessions`
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch study sessions");
+  }
+
+  return await res.json();
+}

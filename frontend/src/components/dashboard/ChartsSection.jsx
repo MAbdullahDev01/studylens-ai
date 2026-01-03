@@ -8,19 +8,19 @@ const sampleData = [
   { date: "2026-01-04", duration: 30 },
 ];
 
-const ChartsSection = () => {
+const ChartsSection = ({ chartData }) => {
   return (
     <div className="space-y-6">
       <LineChartComponent
         title="Study Duration Over Time"
-        data={sampleData}
+        data={chartData}
         xKey="date"
         yKey="duration"
       />
 
       <BarChartComponent
         title="Daily Study Duration"
-        data={sampleData}
+        data={chartData}
         xKey="date"
         yKey="duration"
       />
