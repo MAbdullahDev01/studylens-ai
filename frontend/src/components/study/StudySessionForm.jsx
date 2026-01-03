@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { submitStudySession } from "../../services/api";
 
 const StudySessionForm = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,8 @@ const StudySessionForm = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false); // Fixed typo: was 'succes'
+  const [apiError, setApiError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,36 +54,37 @@ const StudySessionForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setApiError("");
+    setSuccess(false);
+
     if (!validateForm()) return;
+    
+    try {
+      setLoading(true);
 
-    setLoading(true);
+      await submitStudySession({
+        subject: formData.subject,
+        duration: Number(formData.duration),
+        focusLevel: Number(formData.focusLevel),
+        notes: formData.notes,
+      });
 
-    const sessionData = {
-      subject: formData.subject,
-      duration: Number(formData.duration),
-      focus_level: formData.focusLevel,
-      notes: formData.notes,
-      user_id: "placeholder-user-id",
-    };
-
-    console.log("Study Session:", sessionData);
-
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      // Reset form
+      setSuccess(true);
+      setErrors({}); // Clear errors on success
       setFormData({
+        subject: "",
         duration: "",
         focusLevel: 3,
-        subject: "",
-        notes: ""
+        notes: "" 
       });
-      setErrors({}); // Clear errors after successful submission
-      alert("Study session logged successfully!");
-    }, 1000);
+    } catch (err) {
+      setApiError(err.message || "Failed to submit study session");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -99,7 +103,29 @@ const StudySessionForm = () => {
 
         {/* Form Card */}
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100">
-          {/* Only show error box if there are actual errors */}
+          {/* Success Message */}
+          {success && (
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2 sm:gap-3">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <p className="text-xs sm:text-sm text-green-700 flex-1">
+                Study session logged successfully!
+              </p>
+            </div>
+          )}
+
+          {/* API Error Message */}
+          {apiError && (
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2 sm:gap-3">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+              <p className="text-xs sm:text-sm text-red-700 flex-1">{apiError}</p>
+            </div>
+          )}
+
+          {/* Validation Errors */}
           {Object.keys(errors).length > 0 && Object.values(errors).some(error => error !== "") && (
             <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2 sm:gap-3">
               <svg className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
