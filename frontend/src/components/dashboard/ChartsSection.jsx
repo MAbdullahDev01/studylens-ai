@@ -1,3 +1,19 @@
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer
+} from "recharts";
+
+const sampleData = [
+  { date: "2026-01-01", duration: 60 },
+  { date: "2026-01-02", duration: 15 },
+  { date: "2026-01-03", duration: 90 },
+  { date: "2026-01-04", duration: 30 },
+];
+
 const ChartsSection = () => {
   return (
     <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100">
@@ -10,19 +26,51 @@ const ChartsSection = () => {
         </div>
         <div>
           <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
-            Study Trends
+            Study Duration Over Time
           </h2>
-          <p className="text-xs sm:text-sm text-gray-500">Visualize your learning patterns</p>
+          <p className="text-xs sm:text-sm text-gray-500">Track your daily study patterns</p>
         </div>
       </div>
 
-      {/* Chart Placeholder */}
-      <div className="h-48 sm:h-64 lg:h-80 flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 rounded-xl bg-linear-to-br from-blue-50/30 to-indigo-50/30">
-        <svg className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mb-3 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-        </svg>
-        <p className="text-sm sm:text-base font-medium text-gray-500">Charts will appear here</p>
-        <p className="text-xs sm:text-sm text-gray-400 mt-1 sm:mt-2">Start logging sessions to see your progress</p>
+      {/* Chart */}
+      <div className="h-48 sm:h-64 lg:h-80">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={sampleData}>
+            <XAxis 
+              dataKey="date" 
+              stroke="#9CA3AF"
+              style={{ fontSize: '0.75rem' }}
+            />
+            <YAxis 
+              stroke="#9CA3AF"
+              style={{ fontSize: '0.75rem' }}
+              label={{ value: 'Minutes', angle: -90, position: 'insideLeft', style: { fontSize: '0.75rem', fill: '#6B7280' } }}
+            />
+            <Tooltip 
+              contentStyle={{ 
+                backgroundColor: '#fff',
+                border: '1px solid #E5E7EB',
+                borderRadius: '0.5rem',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+              }}
+              labelStyle={{ color: '#374151', fontWeight: 'bold' }}
+            />
+            <Line
+              type="monotone"
+              dataKey="duration"
+              stroke="url(#colorGradient)"
+              strokeWidth={3}
+              dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
+              activeDot={{ r: 6, strokeWidth: 0 }}
+            />
+            <defs>
+              <linearGradient id="colorGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#3B82F6" />
+                <stop offset="100%" stopColor="#6366F1" />
+              </linearGradient>
+            </defs>
+          </LineChart>
+        </ResponsiveContainer>
       </div>
 
       {/* Info Box */}
@@ -32,7 +80,7 @@ const ChartsSection = () => {
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
           </svg>
           <p className="text-xs sm:text-sm text-blue-700">
-            Track your study duration, focus levels, and subject distribution with interactive charts.
+            This chart shows your daily study duration in minutes. Keep consistent to see your progress grow!
           </p>
         </div>
       </div>
