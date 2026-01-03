@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { signUp } from "../../services/auth";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import Card from "../ui/Card"; // Imported the Card component
+import { supabase } from "../../services/supabaseClient";
 
 const RegisterForm = () => {
   const [name, setName] = useState("");
@@ -55,6 +56,15 @@ const RegisterForm = () => {
       navigate("/login");
     }
   };
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        navigate("/dashboard");
+      }
+    });
+  }, []);
+
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">

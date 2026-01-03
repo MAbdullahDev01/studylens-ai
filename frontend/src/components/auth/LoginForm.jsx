@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { signIn } from "../../services/auth";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import Card from "../ui/Card"; // Imported the Card component
+import { supabase } from "../../services/supabaseClient";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -36,6 +37,14 @@ const LoginForm = () => {
       navigate("/dashboard");
     }
   };
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        navigate("/dashboard");
+      }
+    });
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 px-4 sm:px-6 lg:px-8">
