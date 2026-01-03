@@ -1,8 +1,8 @@
 import Card from "../ui/Card";
 
-const StatsGrid = () => {
-  // Common hover classes for the stats cards
+const StatsGrid = ({ sessions = [], totalHours = 0, avgFocus = 0 }) => {
   const statCardClasses = "hover:shadow-2xl transition-shadow duration-200";
+  const hasData = sessions.length > 0;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -17,8 +17,12 @@ const StatsGrid = () => {
           </div>
         </div>
         <p className="text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-2">Total Study Time</p>
-        <p className="text-2xl sm:text-3xl font-bold text-gray-900">—</p>
-        <p className="text-xs text-gray-400 mt-2">No data yet</p>
+        <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+          {hasData ? `${totalHours}h` : "—"}
+        </p>
+        <p className="text-xs text-gray-400 mt-2">
+          {hasData ? "Lifetime focus hours" : "No data yet"}
+        </p>
       </Card>
 
       {/* Sessions Logged */}
@@ -31,8 +35,12 @@ const StatsGrid = () => {
           </div>
         </div>
         <p className="text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-2">Sessions Logged</p>
-        <p className="text-2xl sm:text-3xl font-bold text-gray-900">—</p>
-        <p className="text-xs text-gray-400 mt-2">No data yet</p>
+        <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+          {hasData ? sessions.length : "—"}
+        </p>
+        <p className="text-xs text-gray-400 mt-2">
+          {hasData ? "Completed sessions" : "No data yet"}
+        </p>
       </Card>
 
       {/* Avg Focus Level */}
@@ -45,8 +53,12 @@ const StatsGrid = () => {
           </div>
         </div>
         <p className="text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-2">Avg Focus Level</p>
-        <p className="text-2xl sm:text-3xl font-bold text-gray-900">—</p>
-        <p className="text-xs text-gray-400 mt-2">No data yet</p>
+        <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+          {hasData ? `${avgFocus}%` : "—"}
+        </p>
+        <p className="text-xs text-gray-400 mt-2">
+          {hasData ? "Average productivity" : "No data yet"}
+        </p>
       </Card>
 
     </div>
