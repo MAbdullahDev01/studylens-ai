@@ -1,43 +1,84 @@
 import { useState } from "react";
 
 const StudySessionForm = () => {
-  const [subject, setSubject] = useState("");
-  const [duration, setDuration] = useState("");
-  const [focusLevel, setFocusLevel] = useState(3);
-  const [notes, setNotes] = useState("");
-  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    duration: "",
+    focusLevel: 3,
+    subject: "",
+    notes: ""
+  });
+
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    // Clear the specific error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.subject.trim()) {
+      newErrors.subject = "Subject is required";
+    }
+
+    if (!formData.duration || Number(formData.duration) <= 0) {
+      newErrors.duration = "Duration must be greater than 0";
+    }
+
+    if (
+      !formData.focusLevel ||
+      formData.focusLevel < 1 ||
+      formData.focusLevel > 5
+    ) {
+      newErrors.focusLevel = "Focus level must be between 1 and 5";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
-    
-    // Validation
-    if (!subject || !duration) {
-      setError("Please fill in all required fields.");
-      return;
-    }
+
+    if (!validateForm()) return;
 
     setLoading(true);
 
     const sessionData = {
-      subject,
-      duration: Number(duration),
-      focus_level: focusLevel,
-      notes,
+      subject: formData.subject,
+      duration: Number(formData.duration),
+      focus_level: formData.focusLevel,
+      notes: formData.notes,
       user_id: "placeholder-user-id",
     };
-    
+
     console.log("Study Session:", sessionData);
-    
+
     // Simulate API call
     setTimeout(() => {
       setLoading(false);
       // Reset form
-      setSubject("");
-      setDuration("");
-      setFocusLevel(3);
-      setNotes("");
+      setFormData({
+        duration: "",
+        focusLevel: 3,
+        subject: "",
+        notes: ""
+      });
+      setErrors({}); // Clear errors after successful submission
       alert("Study session logged successfully!");
     }, 1000);
   };
@@ -58,12 +99,17 @@ const StudySessionForm = () => {
 
         {/* Form Card */}
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100">
-          {error && (
+          {/* Only show error box if there are actual errors */}
+          {Object.keys(errors).length > 0 && Object.values(errors).some(error => error !== "") && (
             <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2 sm:gap-3">
               <svg className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
-              <p className="text-xs sm:text-sm text-red-700 flex-1">{error}</p>
+              <div className="text-xs sm:text-sm text-red-700 flex-1">
+                {Object.values(errors).filter(error => error !== "").map((error, index) => (
+                  <p key={index}>{error}</p>
+                ))}
+              </div>
             </div>
           )}
 
@@ -81,13 +127,18 @@ const StudySessionForm = () => {
                 </div>
                 <input
                   id="subject"
+                  name="subject"
                   type="text"
                   placeholder="e.g., Mathematics, History, Programming"
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  className="block w-full pl-9 sm:pl-10 pr-3 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 text-gray-900 placeholder-gray-400"
-                  required
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className={`block w-full pl-9 sm:pl-10 pr-3 py-2.5 sm:py-3 text-sm sm:text-base border ${errors.subject ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 text-gray-900 placeholder-gray-400`}
                 />
+                {errors.subject && (
+                  <p className="text-red-500 text-xs sm:text-sm mt-1">
+                    {errors.subject}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -104,32 +155,50 @@ const StudySessionForm = () => {
                 </div>
                 <input
                   id="duration"
+                  name="duration"
                   type="number"
                   placeholder="e.g., 30, 60, 120"
-                  value={duration}
-                  onChange={(e) => setDuration(e.target.value)}
+                  value={formData.duration}
+                  onChange={handleChange}
                   min="1"
-                  className="block w-full pl-9 sm:pl-10 pr-3 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 text-gray-900 placeholder-gray-400"
-                  required
+                  step="1"
+                  onKeyDown={(e) => {
+                    // Prevent typing 'e', 'E', '+', '-', '.'
+                    if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-' || e.key === '.') {
+                      e.preventDefault();
+                    }
+                  }}
+                  className={`block w-full pl-9 sm:pl-10 pr-3 py-2.5 sm:py-3 text-sm sm:text-base border ${errors.duration ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 text-gray-900 placeholder-gray-400`}
                 />
+                {errors.duration && (
+                  <p className="text-red-500 text-xs sm:text-sm mt-1">
+                    {errors.duration}
+                  </p>
+                )}
               </div>
             </div>
 
             {/* Focus Level Input */}
             <div>
               <label htmlFor="focusLevel" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
-                Focus Level: <span className="font-semibold text-blue-600">{focusLevel}/5</span>
+                Focus Level: <span className="font-semibold text-blue-600">{formData.focusLevel}/5</span>
               </label>
               <div className="relative pt-1">
                 <input
                   id="focusLevel"
+                  name="focusLevel"
                   type="range"
                   min="1"
                   max="5"
-                  value={focusLevel}
-                  onChange={(e) => setFocusLevel(Number(e.target.value))}
+                  value={formData.focusLevel}
+                  onChange={handleChange}
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
                 />
+                {errors.focusLevel && (
+                  <p className="text-red-500 text-xs sm:text-sm mt-1">
+                    {errors.focusLevel}
+                  </p>
+                )}
                 <div className="flex justify-between text-xs text-gray-500 mt-1 px-1">
                   <span>Low</span>
                   <span>Medium</span>
@@ -151,9 +220,10 @@ const StudySessionForm = () => {
                 </div>
                 <textarea
                   id="notes"
+                  name="notes"
                   placeholder="Add any notes about this study session..."
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
+                  value={formData.notes}
+                  onChange={handleChange}
                   rows="4"
                   className="block w-full pl-9 sm:pl-10 pr-3 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 text-gray-900 placeholder-gray-400 resize-none"
                 />
