@@ -6,10 +6,11 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import Card from "../ui/Card"; // Imported the Card component
 
 const BarChartComponent = ({ data, xKey, yKey, title }) => {
   return (
-    <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100">
+    <Card>
       {/* Header */}
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
         <div className="w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center shrink-0">
@@ -74,7 +75,7 @@ const BarChartComponent = ({ data, xKey, yKey, title }) => {
           </p>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 
