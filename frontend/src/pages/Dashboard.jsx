@@ -3,6 +3,7 @@ import { fetchStudySessions } from "../services/api";
 import StatsGrid from "../components/dashboard/StatsGrid";
 import ChartsSection from "../components/dashboard/ChartsSection";
 import RecentSessions from "../components/dashboard/RecentSessions";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 
 const Dashboard = () => {
   const [sessions, setSessions] = useState([]);
@@ -25,7 +26,11 @@ const Dashboard = () => {
   }, []);
 
   if (loading) {
-    return <p className="p-6">Loading dashboard...</p>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner text="Loading dashboard…" />
+      </div>
+    );
   }
 
   if (error) {
